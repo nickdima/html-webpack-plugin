@@ -59,14 +59,16 @@ HtmlWebpackPlugin.prototype.htmlWebpackPluginAssets = function(compiler, webpack
   for (var chunk in webpackStatsJson.assetsByChunkName) {
     var chunkValue = webpackStatsJson.assetsByChunkName[chunk];
 
-    // Webpack outputs an array for each chunk when using sourcemaps
-    if (chunkValue instanceof Array) {
-      // Is the main bundle always the first element?
-      chunkValue = chunkValue[0];
+    if (!(chunkValue instanceof Array)) {
+      chunkValue = [chunkValue];
     }
 
     if (compiler.options.output.publicPath) {
-      chunkValue = compiler.options.output.publicPath + chunkValue;
+      var items = []
+      for (var item in chunkValue) {
+        items.push(compiler.options.output.publicPath + chunkValue[item]);
+      }
+      chunkValue = items;
     }
     assets[chunk] = chunkValue;
   }
